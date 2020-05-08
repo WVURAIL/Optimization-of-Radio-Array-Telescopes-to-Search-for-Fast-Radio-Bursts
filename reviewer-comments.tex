@@ -26,31 +26,46 @@
 
 \maketitle
 
-\section{Reviewer Comments}
+\section{Reviewer Comments, with our replies in italics}
 
 The paper presents an order-of-magnitude design analysis of a hypothetical compact telescope array that is to be used for FRB searches. The main thrust is a comparison of dish-based vs dipole-based collectors and how a fixed amount of hypothetical money should be spent to optimise the FRB detection rate. The results depend strongly on the FRB fluence rate, of course.
 
 It is not clear who the target audience is for this paper. At a high-level it is confirming order-of-magnitude results that are already understood in the FRB community. 
 
-\prs{This paper aims to codify  a framework for the present and future FRB community looking to build detection instrumentation. The framework is stepping stone to design a most nominal use case for FRB detections with appropriate modification. We believe this paper is an addition to the corpus of literature to foster a productive conversation on FRB instrumentation.}  Conversely, the work is far too simplified to be applied to potential real multi-million dollar projects. 
-\jbp{Many radio astronomers will not have considered the optimization of telescopes searchesOur analysis, and the code we have posted, can be used as a starting point for more sophisticated cost benefit analyses of specific instruments.}
+{\it Target audiences we had in mind include: designers of intensity mapping telescopes (e.g. lower frequency, much larger follow-ons to CHIME), and FRB theorists.  Our top conclusion "The cost efficiency of such a survey falls at least as fast as the inverse square of the survey frequency." is not generally recognized, even by FRB experts. When a theorist blithely proposes, 'We need an FRB search at 8 GHz', this paper provides a quick explanation of the very high cost of such a proposed survey.}
 
-The devil is in the details, and it is not appropriate to say things like "N log N = N". Factors of 2 matter when real dollars are involved. \jbp{We added a term to the cost equation that  explicitly includes the N log N term. }\prs{We have incorporated these changes in the paper by redefining the DSP cost function as a sum of the F-engine and X-engine cost which scale as n and nlogn respectively in Section 3 \emph{TODO}, additionally the F-engine contributes to the cost far more significantly. The rates with these modification do however show a decrease as seen in updated figure 1 however do not significantly change the story of this paper}
+The devil is in the details, and it is not appropriate to say things like "N log N = N". Factors of 2 matter when real dollars are involved. 
+
+{\it We added a term to the cost equation that explicitly includes the N log N term. }
 
 I have a few key comments/observations and a number of smaller comments below.
 
 \begin{itemize}
     \item it is not clear if the assumed signal processing is forming incoherent beams or many coherent beams within the primary beam area. This makes a huge difference to both the signal processing requirement and the expected detection rate. The signal processing details cannot be ignored and the statement that signal processing costs are independent of $A_{el}$ is over-simplistic.
-    \prs{The coherent processing of signals is shown to be achieved with FFT beamforming that scales the computational cost with  O(N logN) . This method has been mathematically shown to be robust (1 Masui. K. et. al. https://doi.org/10.3847/1538-4357/ab229e ) and rather successfully implemented by the CHIME instrument (2 Ng. C. et. al https://arxiv.org/abs/1702.04728) \emph{Should we add this statement in cever words to the paper in addtion to the repsonse to the reviewer?}}
-
-    \item likewise, the cost of signal processing should surely scale as n/m for tiles
+{\it We now explicitly say "coherently-formed beam". Since we are discussing custom-built FRB telescopes, this mode of beam forming is preferred over incoherent techniques. }  
+    
+    \item likewise, the cost of signal processing should surely scale as n/m for tiles  
+    
+{\it We checked that the cost equation shows the correct n and m dependence.}
     
     \item dish:dipole ratio of 1:0.92 seems highly unrealistic. The whole advantage of dipoles is that they are cheap and easy to deploy at low frequencies and complete overkill at high frequencies. I think this ratio needs to be justified, since all results stem from it. 10 square meters of collecting area in dipoles is very different at 400 MHz vs 1600 MHz and the cost per square meter would most certainly not be the same.
     
-    \prs{The dish:dipole ratio is derived from the true physical cost of building the 12 dish prototype at GBO. We have assumed that that the dipoles in question are fabricated out of PCBs which scale wrt $A_{el}$ and our analysis does not include labor cost of welding etc involved in other antenna designs}\jbp{TODO: cleverer wording of this?}
+{\it Since this ratio is redundant with the cost equation we present, we removed it in the interest of brevity.  The reviewer mis-read the expression. 1:0.92 is the ratio of the dish cost to signal processing cost.  Apparently, the presentation was confusing...but now it's gone. }
     
-    \item some of the points on the plots do not make sense. E.g. the string of blue and green dots in the Fig 1 plots corresponding to 20x20 (or larger!) tiles. Surely you would not consider building such huge tiles? Do you have a size limit for tiles? \prs{Yes, we can consider building an aperture array unit of arbitrarily large tiles, there is a precedent with designs involve relatively large tiles for example the EMBRACE antenna design which analyses tiles as big as 20,000 elements ( Ptel. P. et. al.  10.1109/APS.2008.4619303)}
-    \item it should be made clear in the abstract and text that this is for a zenith/transit telescope (as it appears to be) \prs{ok}
-    \item reference for the cost of radiator collection area (Deng and Campbell-Wilson, 2017) doesn't actually talk about this scaling. Is this the correct reference? \prs{presented this refernece in a clearer fashion adding further refernces to support said statements in Section 3} 
+    \item some of the points on the plots do not make sense. E.g. the string of blue and green dots in the Fig 1 plots corresponding to 20x20 (or larger!) tiles. Surely you would not consider building such huge tiles? Do you have a size limit for tiles? 
+    
+{\it We present such cases to make the point they are far from optimum, which is apparent in the plots. Array with large tiles already exist, for example EMBRACE. Their discussion presents tiles as big as 20,000 elements ( Ptel. P. et. al.  10.1109/APS.2008.4619303) }
+    
+ 
+    
+    \item it should be made clear in the abstract and text that this is for a zenith/transit telescope (as it appears to be) 
+    
+{\it Thanks for pointing out this omission. We prefer the term 'drift-scan', since telescopes like HIRAX will have fixed AZ and EL, but are not restricted to the Zenith. We now say in the abstract, "We present projected Fast Radio Burst detection rates from surveys carried out using a set of hypothetical close-packed drift-scan array telescopes." In the Introduction we say, "We restrict our analysis to close-packed, drift-scan arrays." We also explain why, by saying, "the added cost of the tracking system does not increase the FRB discovery rate."}
+    
+    \item reference for the cost of radiator collection area (Deng and Campbell-Wilson, 2017) doesn't actually talk about this scaling. Is this the correct reference? 
+
+{\it Reference removed.}    
+    
+
 \end{itemize}
 \end{document}

@@ -34,7 +34,7 @@ $^{3}$Center for Gravitational Waves and Cosmology, West Virginia University, Mo
 \maketitle
 
 \begin{abstract}
-We present projected Fast Radio Burst detection rates from surveys carried out using a set of hypothetical close-packed array telescopes. The cost efficiency of such a survey falls at least as fast as the inverse square of the survey frequency. There is an optimum array element effective area in the range 0 to 25 $\rm{m^2}$.  If the power law index of the FRB integrated source count versus fluence $\alpha = d ~ln R/d ~ln F > -1$ the most cost effective telescope layout uses individual dipole elements, which provides an all-sky field of view. If $\alpha <-1$ dish arrays are more cost effective.
+We present projected Fast Radio Burst detection rates from surveys carried out using a set of hypothetical close-packed drift-scan array telescopes. The cost efficiency of such a survey falls at least as fast as the inverse square of the survey frequency. There is an optimum array element effective area in the range 0 to 25 $\rm{m^2}$.  If the power law index of the FRB integrated source count versus fluence $\alpha = d ~ln R/d ~ln F > -1$ the most cost effective telescope layout uses individual dipole elements, which provides an all-sky field of view. If $\alpha <-1$ dish arrays are more cost effective.
 
 \end{abstract}
 
@@ -49,11 +49,11 @@ Efforts to explain the exceptionally high inferred isotropic brightness temperat
 
 The optimum parameters for a custom FRB telescope may depart substantially from previous telescope designs.  Below we examine a set of hypothetical telescope layouts and calculate the dependence of FRB detection rate on array element collecting area as well as survey frequency and number of elements. 
 
-We restrict our analysis to close-packed arrays. Alternatives not considered include: Large single dishes with a focal plane array of feeds--these are more expensive than close packed arrays of the same collecting area; Dilute dish arrays--these have increased processing costs, with a different signal processing system than discussed here.  
+We restrict our analysis to close-packed, drift-scan arrays. Alternatives not considered include: Large single dishes with a focal plane array of feeds--these are more expensive than close packed arrays of the same collecting area; Dilute dish arrays--these have increased processing costs, with a different signal processing system than discussed here; Telescopes with tracking systems--the added cost of the tracking system does not increase the FRB discovery rate.
  
 \section{Projected FRB detection rates}
 
-We consider two types of array elements: on-axis paraboloidal dishes and square aperture array tiles.  Each tile consists of $m=1, 4, 9 ...$ dipole-like antennas, analog summed to serve as a single array element with one coherent beam on the sky. For either type, $n$ elements are close-packed to form the telescope.  For simplicity we set aside consideration of multi-beam tiles. A brief examination of this option shows no strong cost efficiency benefit.
+We consider two types of array elements: on-axis paraboloidal dishes and square aperture array tiles.  Each tile consists of $m=1, 4, 9 ...$ dipole-like antennas, analog summed to serve as a single array element with one coherently-formed beam on the sky. For either type, $n$ elements are close-packed to form the telescope.  For simplicity we set aside consideration of multi-beam tiles. A brief examination of this option shows no strong cost efficiency benefit.
 A system in which {\it all} $m$ beams are coherently formed for each tile would provide the same FRB rate as our case $m=1$, but would have higher cost.
 We also leave cylinder arrays \citep{chimesystem} to future analysis since these are phased-array-dish hybrids and should produce rates that fall between the two cases we consider.
 
@@ -126,7 +126,7 @@ For dish arrays we adopt Radiation Collector cost function $C_d = D_o A_{\rm{el}
 We assume the dish cost is independent of frequency, since many commercially available dishes are more precise than we require at these low frequencies.
 
 
-For aperture array tiles we adopt Radiation Collector cost function $C_a = A_o ~m ~n$, where $A_o$ is the cost of an individual dipole-like antenna (\cite{clover}).
+For aperture array tiles we adopt Radiation Collector cost function $C_a = A_o ~m ~n$, where $A_o$ is the cost of an individual dipole-like antenna.
 
 For the Frequency Channelizer we adopt the cost function $C_s = F_o ~f ~\nu ~n$, and for the Beam Former we adopt cost function $B_o ~f ~\nu ~n ln(n)$.
 
