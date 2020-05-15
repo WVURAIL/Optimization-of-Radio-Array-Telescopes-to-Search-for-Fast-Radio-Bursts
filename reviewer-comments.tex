@@ -42,8 +42,12 @@ I have a few key comments/observations and a number of smaller comments below.
 
 \begin{itemize}
     \item it is not clear if the assumed signal processing is forming incoherent beams or many coherent beams within the primary beam area. This makes a huge difference to both the signal processing requirement and the expected detection rate. The signal processing details cannot be ignored and the statement that signal processing costs are independent of $A_{el}$ is over-simplistic.
-{\it We now explicitly say "coherently-formed beam". Since we are discussing custom-built FRB telescopes, this mode of beam forming is preferred over incoherent techniques. }  
-    
+{\it We now explicitly say "coherently-formed beam". Since we are discussing custom-built FRB telescopes, this mode of beam forming is preferred over incoherent techniques.  
+
+The reviewer's concern about over-simlpification led us to explaining that tiles with multi-beam formers are redundant with the case we consider. We added a footnote saying,
+
+"Suppose, in the interest if increasing sky coverage, a telescope designer decided to form not one but four coherent beams, producing four signals from every tile. The three new beams would each require a new signal processing channel. Given that there are now four times as many signal processors another option would be increase sky coverage by making each tile smaller by a factor two in each dimension, keeping one beam per tile, and making four times as many tiles.  The two systems would have the same sky coverage, number of dipoles, signal processor channels, total collecting area and provide the same FRB rate. However, the multi-beam system would have the added cost of the additional analog beam-formers as well as substantially increased system complexity. The simpler more cost efficient choice is to form just one beam per tile and adjust the sky coverage using the tile size $m$. We therefore proceed with consideration of single-beam tiles, setting aside as redundant the multi-beam options."}
+
     \item likewise, the cost of signal processing should surely scale as n/m for tiles  
     
 {\it We checked that the cost equation shows the correct n and m dependence.}
@@ -54,18 +58,18 @@ I have a few key comments/observations and a number of smaller comments below.
     
     \item some of the points on the plots do not make sense. E.g. the string of blue and green dots in the Fig 1 plots corresponding to 20x20 (or larger!) tiles. Surely you would not consider building such huge tiles? Do you have a size limit for tiles? 
     
-{\it We present such cases to make the point they are far from optimum, which is apparent in the plots. Array with large tiles already exist, for example EMBRACE. Their discussion presents tiles as big as 20,000 elements ( Ptel. P. et. al.  10.1109/APS.2008.4619303) }
+{\it We present such cases to make the point they are far from optimal, which is apparent in the plots. We follow precedent in discussing large tiles: Arrays with large tiles already exist, for example EMBRACE. Their discussion presents tiles as big as 20,000 elements ( Ptel. P. et. al.  10.1109/APS.2008.4619303) }
     
  
     
     \item it should be made clear in the abstract and text that this is for a zenith/transit telescope (as it appears to be) 
     
-{\it Thanks for pointing out this omission. We prefer the term 'drift-scan', since telescopes like HIRAX will have fixed AZ and EL, but are not restricted to the Zenith. We now say in the abstract, "We present projected Fast Radio Burst detection rates from surveys carried out using a set of hypothetical close-packed drift-scan array telescopes." In the Introduction we say, "We restrict our analysis to close-packed, drift-scan arrays." We also explain why, by saying, "the added cost of the tracking system does not increase the FRB discovery rate."}
+{\it Thanks for pointing out this omission. We prefer the term 'drift-scan', since telescopes like HIRAX will have fixed AZ and EL, but are not restricted to the Zenith. We now say in the abstract, "We present projected Fast Radio Burst detection rates from surveys carried out using a set of hypothetical close-packed drift-scan array telescopes." In the Introduction we say, "We restrict our analysis to close-packed, drift-scan arrays." We also explain why, by saying, "the added cost of the tracking system does not result in an increase in the FRB discovery rate."}
     
     \item reference for the cost of radiator collection area (Deng and Campbell-Wilson, 2017) doesn't actually talk about this scaling. Is this the correct reference? 
 
 {\it Reference removed.}    
-    
+
 
 \end{itemize}
 \end{document}
