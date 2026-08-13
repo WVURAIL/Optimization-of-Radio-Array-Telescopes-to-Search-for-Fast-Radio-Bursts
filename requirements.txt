@@ -1,0 +1,12 @@
+# Analysis dependencies for cost_scaling.ipynb and scaley_kmb_mod.ipynb
+#
+# numba is NOT optional: cost_scaling.ipynb JIT-compiles findn() and findn_array().
+# Without it the first cell dies with ModuleNotFoundError.
+numpy
+scipy
+matplotlib
+numba
+
+# For the %matplotlib notebook backend under JupyterLab
+ipympl
+jupyterlab
