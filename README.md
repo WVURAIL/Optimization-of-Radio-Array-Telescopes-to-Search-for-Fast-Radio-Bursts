@@ -6,9 +6,10 @@ Cost-optimization analysis and manuscript source for:
 > Telescopes to Search for Fast Radio Bursts*
 > [arXiv:2001.06526](https://arxiv.org/abs/2001.06526)
 
-<!-- TODO: if this was published, add the journal reference and DOI here. The repo
-     contains referee responses, so it went through review — someone on the author
-     list will know the outcome. -->
+<!-- Publication status is not recorded here. The referee responses in paper/ show
+     the manuscript went through review, but whether it appeared in MNRAS or stayed
+     on arXiv is undocumented. An author would know; add the journal reference and
+     DOI if it was published. -->
 
 ## What the paper asks
 
@@ -77,9 +78,13 @@ this to present-day hardware costs.
 ## History
 
 This repository absorbed a second repo, `...-Fast-Radio-Bursts-Draft`, which held the
-manuscript while the code lived here. Both histories are preserved in this repo; the
-`-Draft` repo is archived.
+manuscript while the code lived here. Both histories are preserved here — the merge
+kept every commit from both sides — and the `-Draft` repository has since been
+deleted, so this is now the only copy.
+
+The URL cited in the paper's own footnote points at this repository, so it should
+not be renamed or deleted.
 
 ## Licence
 
-<!-- TODO: add a LICENSE file. MIT or BSD-3-Clause is conventional for analysis code. -->
+BSD 3-Clause License — see [`LICENSE`](LICENSE).
