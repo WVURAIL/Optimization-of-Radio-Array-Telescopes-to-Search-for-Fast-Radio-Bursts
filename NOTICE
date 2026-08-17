@@ -1,0 +1,23 @@
+# Rights and attribution notice
+
+This repository combines research code, manuscript source, figures, a bibliography,
+and third-party publication-support files. Repository custody and Git commit metadata
+do not, by themselves, establish copyright ownership.
+
+Known attribution recorded in the archived materials:
+
+- The manuscript names Jeffrey B. Peterson, Kevin Bandura, and Pranav Sanghavi as
+  authors.
+- The manuscript states that Olga Navros helped prepare Figure 1.
+- Embedded metadata in `code/rate_over_cost.xltx` identifies Jeffrey Peterson as its
+  creator and CMU as the company.
+- `paper/mnras.cls` and `paper/mnras.bst` contain their own authorship, copyright, and
+  LaTeX Project Public License notices.
+
+No repository-wide license is granted. A file with its own license notice is governed
+by that notice. For other files, this archive grants no permission to copy, modify, or
+redistribute the material except as permitted by applicable law or by the relevant
+rightsholder.
+
+The Git history records additional contribution provenance but should not be
+interpreted as a determination of copyright ownership.

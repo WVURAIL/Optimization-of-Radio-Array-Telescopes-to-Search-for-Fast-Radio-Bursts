@@ -18,6 +18,7 @@ venv/
 *.fdb_latexmk
 *.fls
 *.toc
+paper/frbarray.pdf
 
 # OS cruft
 .DS_Store

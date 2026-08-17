@@ -1,6 +1,3 @@
-\newcount\Comments  % 0 suppresses notes to selves in text
-\Comments=1   % TODO: set to 0 for final version
-
 \documentclass[fleqn,usenatbib]{mnras}
 
 \usepackage{newtxtext,newtxmath}
@@ -9,25 +6,11 @@
 \usepackage{graphicx}	% Including figure files
 % \usepackage{subcaption}
 \usepackage{amsmath}	% Advanced maths commands
-\usepackage{amssymb}	% Extra maths symbols
 \usepackage{footnote}
-
-% for comments
-\usepackage{color}
-\definecolor{darkgreen}{rgb}{0,0.5,0}
-\definecolor{purple}{rgb}{1,0,1}
-% \kibitz{color}{comment} inserts a colored comment in the text
-\newcommand{\kibitz}[2]{\ifnum\Comments=1\textcolor{#1}{#2}\fi}
-
-% add yourself here:
-\newcommand{\jbp}[1]{\kibitz{red}      {[JBP: #1]}}
-\newcommand{\kmb}[1]  {\kibitz{purple}   {[KMB: #1]}}
-\newcommand{\kmbc}[1]  {\kibitz{cyan}   {[KMB comment: #1]}}
-\newcommand{\prs}[1]{\kibitz{darkgreen}     {[PRS: #1]}}
 
 \title{Optimization of Radio Array Telescopes to Search for Fast Radio Bursts}
 
-\author[Peterson J. B. et. al.]{
+\author[Peterson J. B. et al.]{
 Jeffrey B Peterson$^{1}$\thanks{E-mail: jbp@cmu.edu },
 Kevin Bandura$^{2,3}$\thanks{E-mail: kevin.bandura@mail.wvu.edu },
 Pranav Sanghavi$^{2,3}$ \thanks{E-mail: pranav.sanghavi@mail.wvu.edu}
@@ -39,9 +22,9 @@ $^{2}$LCSEE, West Virginia University, Morgantown, WV 26505, USA\\
 $^{3}$Center for Gravitational Waves and Cosmology, West Virginia University, Morgantown, WV 26505, USA
 }
 
-\date{Accepted XXX. Received YYY; in original form ZZZ}
+\date{Unpublished post-referee working draft; repository revision 16 August 2026}
 
-\pubyear{20}
+\pubyear{2020}
 
 \begin{document}
 \label{firstpage}
@@ -59,7 +42,7 @@ fast radio bursts -- instrumentation: miscellaneous -- instrumentation: detector
 
 \section{Introduction}
 Fast Radio Bursts are bright millisecond radio flashes broadly distributed across the sky. Most FRB pulses arrive with dispersion measure much larger than the estimated Galactic contribution along the line of sight of detection, therefore FRBs are believed to originate in extra-galactic sources.
-Five FRBs \citep{2017ApJ...834L...7T,frbcat} have been localized and are coincident with galaxies at redshifts of 0.03, 0.19, 0.32, 0.48 and 0.66, reinforcing the extragalactic origin hypothesis.
+Five FRBs \citep{2017ApJ...834L...7T,2016PASA...33...45P} have been localized and are coincident with galaxies at redshifts of 0.03, 0.19, 0.32, 0.48 and 0.66, reinforcing the extragalactic origin hypothesis.
 Efforts to explain the exceptionally high inferred isotropic brightness temperature of these sources ($10^{38} \rm{~K}$) along with the all-sky rate ($\sim$2000/year above fluence 1 Jy ms) have employed extreme astrophysical models \citep{review1, review2}. If the few-millisecond duration of the bursts reflects the spatial extent of the source region, these cosmologically distant sources have an angular diameter smaller than $10^{-21}$ radians. The small source size allows FRB spectra to exhibit non-dispersive two-path interference when microlensed \citep{2019BAAS...51c.420R}, as well as scattering and scintillation that does exhibit dispersion as the pulses transit the intervening plasma. FRBs can therefore serve as a unique new probe of the microlensed and ionized universe.
 
 The optimum parameters for a custom FRB telescope may depart substantially from previous telescope designs.  Below we examine a set of hypothetical telescope layouts and calculate the dependence of FRB detection rate on array element collecting area as well as survey frequency and number of elements. 
@@ -68,10 +51,10 @@ We restrict our analysis to close-packed, drift-scan arrays. Alternatives not co
  
 \section{Projected FRB detection rates}
 
-We consider two types of array elements: on-axis paraboloidal dishes and square aperture array tiles with a \jbp{*}single-beam\footnote{\jbp{*}Suppose, in the interest if increasing sky coverage, a telescope designer decided to form not one but four coherent beams, producing four signals from every tile. The three new beams would each require a new signal processing channel. Given that there are now four times as many signal processors another option would be increase sky coverage by making each tile smaller by a factor two in each dimension, keeping one beam per tile, and making four times as many tiles.  The two systems would have the same sky coverage, number of dipoles, signal processor channels, total collecting area and provide the same FRB rate. However, the multi-beam system would have the added cost of the additional analog beam-formers as well as substantially increased system complexity. The simpler more cost efficient choice is to form just one beam per tile and adjust the sky coverage using the tile size $m$. We therefore proceed with consideration of single-beam tiles, setting aside as redundant the multi-beam options.} coherent analog summing network.  Each tile consists of $m=1, 4, 9 ...$ dipole-like antennas. $n$ elements are close-packed to form the telescope.  
+We consider two types of array elements: on-axis paraboloidal dishes and square aperture array tiles with a single-beam\footnote{Suppose, in the interest of increasing sky coverage, a telescope designer decided to form not one but four coherent beams, producing four signals from every tile. The three new beams would each require a new signal processing channel. Given that there are now four times as many signal processors, another option would be to increase sky coverage by making each tile smaller by a factor of two in each dimension, keeping one beam per tile, and making four times as many tiles. The two systems would have the same sky coverage, number of dipoles, signal processor channels, total collecting area and provide the same FRB rate. However, the multi-beam system would have the added cost of the additional analog beam-formers as well as substantially increased system complexity. The simpler, more cost-efficient choice is to form just one beam per tile and adjust the sky coverage using the tile size $m$. We therefore proceed with consideration of single-beam tiles, setting aside the redundant multi-beam options.} coherent analog summing network. Each tile consists of $m=1, 4, 9 ...$ dipole-like antennas. $n$ elements are close-packed to form the telescope.
 We leave cylinder arrays \citep{chimesystem} to future analysis since these are phased-array-dish hybrids and should produce rates that fall between the two cases we consider.
 
-Each element covers the same instantaneous field of view $\Omega=4\pi/G$, defined in terms of the peak antenna gain $G$ (\cite{era}. The effective collecting area of each element $A_{\rm{el}}$ is related to $\Omega$ via the diffraction relation, 
+Each element covers the same instantaneous field of view $\Omega=4\pi/G$, defined in terms of the peak antenna gain $G$ \citep{era}. The effective collecting area of each element $A_{\rm{el}}$ is related to $\Omega$ via the diffraction relation,
 
 \begin{equation}
 		A_{\rm{el}} ~\Omega =\lambda^2.
@@ -143,19 +126,12 @@ For aperture array tiles we adopt Radiation Collector cost function $C_a = A_o ~
 
 For the Frequency Channelizer we adopt the cost function $C_s = F_o ~f ~\nu ~n$, and for the Beam Digital Former we adopt cost function $B_o ~f ~\nu ~n ~ln(n)$.
 
-To set the cost coefficients $D_o$, $A_o$, $F_o$ and $B_o$ we use cost data for an FRB-search array of 12 six-meter dishes we built at Green Bank WV in 2019, \jbp{*}scaled to $n \sim 1000$ elements. $D_o= 0.029 [\rm{m^{-2.5}}]$, $ S_o = 2.3 \times 10^{-3}\rm{~[MHz^{-1}}]$, $F_o = 0.067 $ and $B_o = 0.0067$. 
-
-%\prs{It should be noted that these co-effecients are correspond to a system scaled for sample of a large element sets as mentioned in section 5 ( rewrite and add sample number of elements in section 5}
-%JP: done.
-
-
-
-
+To set the cost coefficients $D_o$, $A_o$, $F_o$ and $B_o$ we use cost data for an FRB-search array of 12 six-meter dishes we built at Green Bank WV in 2019, scaled to $n \sim 1000$ elements. $D_o= 0.029 [\rm{m^{-2.5}}]$, $ S_o = 2.3 \times 10^{-3}\rm{~[MHz^{-1}}]$, $F_o = 0.067 $ and $B_o = 0.0067$.
 
 \section{Frequency Dependence}
 
 Projected FRB detection rates fall dramatically with frequency, as seen in Figure 1, primarily because of the $\lambda^2$ factor in equation 1.
-Note that our calculations show only the instrumental impact of telescope parameters on the rate, while the on-sky rate also depends on the (unknown) source spectrum and on possible pulse broadening during propagation. This scatter-broadening is expected at low frequencies due to plasma structure in the host galaxy or in the Milky Way and may produce a low frequency falloff of the rate. The observational data on scattering are ambiguous. About 5 \% of the entries in FRBCAT \citep{frbcat}  have a measured scattering spectral index ($d ~ln ~\tau_{\rm{scat}}/ d ~ln ~\nu$) with values ranging from --3.6 to --4.8, consistent with scattering in turbulent plasma. However there are also FRB spectra that show no measurable scatter broadening, even at 400~MHz, the lowest detection frequency so far \citep{chime1}. 
+Note that our calculations show only the instrumental impact of telescope parameters on the rate, while the on-sky rate also depends on the (unknown) source spectrum and on possible pulse broadening during propagation. This scatter-broadening is expected at low frequencies due to plasma structure in the host galaxy or in the Milky Way and may produce a low frequency falloff of the rate. The observational data on scattering are ambiguous. About 5 \% of the entries in FRBCAT \citep{2016PASA...33...45P} have a measured scattering spectral index ($d ~ln ~\tau_{\rm{scat}}/ d ~ln ~\nu$) with values ranging from --3.6 to --4.8, consistent with scattering in turbulent plasma. However there are also FRB spectra that show no measurable scatter broadening, even at 400~MHz, the lowest detection frequency so far \citep{chime1}.
 
 We summarize current published rate estimates in Table 1 and Figure 2. FRBs have been detected from 400~MHz to 8~GHz. Most archival searching has been done near 1.5~GHz so there is substantial rate information at that frequency. The CHIME team reports numerous FRB detections at their lowest frequency 400~MHz but the team has not published an all-sky rate \citep{chimesystem, chime1, chime2}. At and below 327~MHz there are reports of non-detection but the fluence limits of these surveys are much higher than for the higher frequency surveys. So far, there is at best weak evidence for any spectral slope of the FRB detection rate.
 
@@ -174,25 +150,25 @@ Since we calculate the instrument-specific impact of telescope parameters on the
 \hline
 Survey                              & Freq[MHz]  & Rate [events/sky/day]       & $F_{\rm{lim}}$ [Jy.ms]                                                  \\ \hline
  Lorimer Burst \citep{Lorimer}  & 1400             & 225                       & 6.7                       \\
- Parkes 2013 \citep{parkes2013}     & 1400             & $10000^{6000}_{-5000}$    & 3                         \\
+ Parkes 2013 \citep{parkes2013}     & 1400             & $10000^{+6000}_{-5000}$    & 3                         \\
  LOFAR PFRT 2014 \citep{lofar2014}& 142              & $< 150$                    & 70    \\
  MWA 2015  \citep{mwa2015}      & 155              & $< 700$                      &  700                  	\\
  GBT 2015  \citep{gbt2015}      & 800              & $5000$                    & 1                         \\
- Parkes 2016 \citep{parkes20160} & 1400             & $4400^{+520}_{-310}$       & 4                         \\
+ Parkes 2016 \citep{parkes20160} & 1400             & $4400^{+5200}_{-3100}$       & 4                         \\
  Parkes 2016 \citep{parkes20161}     & 1400             & $7000^{+5000}_{-3000}$    & 1.5                       \\
  Parkes 2016   \citep{parkes20162}  & 1400             & $3300^{+3700}_{-2200} $    & 3.8                       \\    
  GBNCC 2017 \citep{gbncc2017}   & 350               & $ < 3620$  & 3.15                                         \\
  UTMOST 2017  \citep{utmost2017}   & 843              & $5.0^{+18.7}_{-4.7}$     & 69                        \\
  Parkes 2018  \citep{parkes2018}  & 1400             & $1700^{+1500}_{-900}$      & 2                         \\ 
- ASCAP 2018    \citep{ascap2018}  & 1400             & $37 \pm 8 $               & 26                    	\\
- UTMOST 2019   \citep{utmost2019}  & 843              & $98^{59}_{-39}$           & 8                         \\    
+ ASKAP 2018    \citep{ascap2018}  & 1400             & $37 \pm 8 $               & 26                    	\\
+ UTMOST 2019   \citep{utmost2019}  & 843              & $98^{+59}_{-39}$           & 8                         \\
  \hline
 \end{tabular}}
 \end{table*}
 
 \section{Number of array elements}
 
-Budgets have limits, so we fix the total telescope cost at the arbitrary value 2000 units, which allows for an interesting detection rate of 100s to 1000s of FRBs per year.  This leads to an telescope with n $\sim$ 1000  elements.\jbp{*} Under this constraint increasing the element collecting area will entail a reduction of the number of elements. This creates a peak in the rate function $R(A_{\rm{el}})$ at which the cost efficiency is maximized.
+Budgets have limits, so we fix the total telescope cost at the arbitrary value 2000 units, which allows for an interesting detection rate of 100s to 1000s of FRBs per year. This leads to a telescope with n $\sim$ 1000 elements. Under this constraint increasing the element collecting area will entail a reduction of the number of elements. This creates a peak in the rate function $R(A_{\rm{el}})$ at which the cost efficiency is maximized.
 
 \section{Element Effective Area}
 
@@ -200,10 +176,10 @@ The dependence of projected FRB detection rate on $A_{\rm{el}}$ is shown in Figu
  
 \section{Discussion}
 
-For aperture arrays the optimal rate decreases by 0.062 per frequency doubling for $\alpha =-2$ and 0.20 per frequency doubling for  $\alpha =-1$.  For dish arrays the decrease is 0.22 per frequency doubling ($\alpha =-2$) and 0.18 per frequency doubling ($\alpha =-1$). All these factors are less than 1/4 so we find the cost efficiency of such telescopes falls with frequency with at least two powers of $\nu_s$. Once the on-sky rate versus frequency is measured, if low frequency FRBs are rare, the source spectral slope and/or scattering spectral slope may compensate for the telescope cost efficiency spectral slope. The optimum frequency can then be determined by locating the point where the combined slope is zero. Published rate data are not sufficiently precise to determine this optimum frequency. However, scattering is absent in several published FRB spectra at 400~MHz, indicating that a high throughput search below this frequency should yield FRB detections. 
+For aperture arrays the optimal rate changes by approximately 0.066 per frequency doubling for $\alpha =-2$ and 0.19 per frequency doubling for $\alpha =-1$. For dish arrays the corresponding factors are approximately 0.22--0.23 ($\alpha =-2$) and 0.185 ($\alpha =-1$). All these factors are less than 1/4 so we find the cost efficiency of such telescopes falls with frequency with at least two powers of $\nu_s$. Once the on-sky rate versus frequency is measured, if low frequency FRBs are rare, the source spectral slope and/or scattering spectral slope may compensate for the telescope cost efficiency spectral slope. The optimum frequency can then be determined by locating the point where the combined slope is zero. Published rate data are not sufficiently precise to determine this optimum frequency. However, scattering is absent in several published FRB spectra at 400~MHz, indicating that a high throughput search below this frequency should yield FRB detections.
 If the CHIME team finds an all sky rate versus frequency with spectral index greater than 2 they may be able to locate the optimum frequency within their band. If the index is below 2 the optimum lies below 400 MHz. 
 
-The source count index $\alpha$ determines which array type (dishes versus aperture array tiles) is most cost efficient. The critical point is near $\alpha = -1.0$.  If dim FRBs are rare enough ($\alpha > -1$) the all-sky array is the the most cost efficient choice.
+The source count index $\alpha$ determines which array type (dishes versus aperture array tiles) is most cost efficient. The critical point is near $\alpha = -1.0$. If dim FRBs are rare enough ($\alpha > -1$) the all-sky array is the most cost-efficient choice.
 
 In the future it is reasonable to assume signal processing costs will continue to fall. As this happens the cost efficiency of the all-sky aperture array will see the greatest improvement to cost efficiency, since this configuration has costs strongly dominated by the signal processor.
 
@@ -227,7 +203,7 @@ Apart from cost considerations, the science goals for wide and narrow field obse
 All-sky telescopes can be used to understand the FRB emission mechanism, by allowing detection of rare, nearby, bright events which can be followed up at other wavelengths with high sensitivity and spatial resolution. In contrast, larger element area allows detection of dimmer FRBs along longer paths through the ionized universe, allowing improved constraints to the evolution of FRB rates over cosmic time, increased occurrence of lensed events and tighter cosmological constraints.
 
 \section*{Acknowledgements}
-We thank the anonymous reviewer for insightful comments. \jbp{*}
+We thank the anonymous reviewer for insightful comments.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

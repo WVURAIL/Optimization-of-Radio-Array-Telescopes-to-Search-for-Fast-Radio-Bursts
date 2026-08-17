@@ -1,66 +1,87 @@
 # Optimization of Radio Array Telescopes to Search for Fast Radio Bursts
 
-Cost-optimization analysis and manuscript source for:
+Cost-optimization analysis and manuscript source accompanying:
 
-> **Peterson, J. B., Bandura, K., & Sanghavi, P.** — *Optimization of Radio Array
-> Telescopes to Search for Fast Radio Bursts*
-> [arXiv:2001.06526](https://arxiv.org/abs/2001.06526)
+> **Peterson, J. B., Bandura, K., & Sanghavi, P.**<br>
+> *Optimization of Radio Array Telescopes to Search for Fast Radio Bursts*<br>
+> [arXiv:2001.06526](https://arxiv.org/abs/2001.06526) ·
+> [doi:10.48550/arXiv.2001.06526](https://doi.org/10.48550/arXiv.2001.06526)
 
-<!-- Publication status is not recorded here. The referee responses in paper/ show
-     the manuscript went through review, but whether it appeared in MNRAS or stayed
-     on arXiv is undocumented. An author would know; add the journal reference and
-     DOI if it was published. -->
+## Version and publication status
 
-## What the paper asks
+- Tag [`v1.0`](https://github.com/WVURAIL/Optimization-of-Radio-Array-Telescopes-to-Search-for-Fast-Radio-Bursts/releases/tag/v1.0)
+  is the source snapshot corresponding to arXiv version 1, submitted on January 17,
+  2020. It is retained unchanged as the historical preprint release.
+- `paper/frbarray.tex` on the default branch is a later working draft from April–May
+  2020, with clearly documented archival corrections made in 2026. It is not identified
+  by this archive as an accepted manuscript or version of record.
+- As of August 16, 2026, neither the arXiv record nor the project metadata reviewed for
+  this archive lists a journal citation or publisher DOI.
 
-Given a fixed budget, what telescope should you build to detect the most fast radio
-bursts? The analysis compares **dish arrays** against **dipole aperture arrays** across
-survey frequency, element size, and assumed FRB fluence distribution slope α.
+For scientific citation, use the arXiv paper above. See [`CITATION.cff`](CITATION.cff)
+for machine-readable metadata and [`CORRECTIONS.md`](CORRECTIONS.md) for changes made
+during archival review.
 
-The headline result — that **cost efficiency falls at least as fast as the inverse
-square of survey frequency** — is the reason to reach for this code. It gives a quick
-quantitative answer when someone proposes an FRB search at high frequency.
+## What the analysis asks
 
-## Layout
+Given a fixed budget, what telescope should be built to detect the most fast radio
+bursts? The analysis compares dish arrays with dipole aperture arrays across survey
+frequency, element size, and assumed FRB fluence-distribution slope α.
 
-```
+The model finds that cost efficiency falls at least as fast as the inverse square of
+survey frequency under its assumptions. Its hardware and cost inputs date from roughly
+2019–2020 and should not be treated as current procurement estimates.
+
+## Repository layout
+
+```text
 code/
-  cost_scaling.ipynb      Main analysis. Produces Figures 1-3 of the paper.
-  scaley_kmb_mod.ipynb    Published FRB rates rescaled to a common fluence threshold.
-  rate_over_cost.xltx     Excel template for the cost model.
+  cost_scaling.ipynb      Main cost analysis; produces the three panels of Figure 1.
+  scaley_kmb_mod.ipynb    Published FRB rates rescaled to a common fluence threshold;
+                          produces Figure 2 for α = -3/2.
+  rate_over_cost.xltx     Legacy, pre-review Excel model; it does not include N log N.
 paper/
-  frbarray.tex            Manuscript (MNRAS format)
-  reviewer-comments.tex   Referee report with point-by-point responses
-  papers.bib              Bibliography
-  mnras.cls, mnras.bst    MNRAS LaTeX class and bibliography style
-  *.png                   Figures
+  frbarray.tex            Unpublished post-referee working draft (MNRAS format).
+  papers.bib              Bibliography.
+  mnras.cls, mnras.bst    Third-party MNRAS class and bibliography style.
+  *.png                   Canonical figures used by the manuscript.
 ```
 
-## Running the analysis
+## Reproducing the analysis
+
+The archived environment was tested with Python 3.12. Direct dependencies are pinned in
+`requirements.txt`:
 
 ```bash
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 jupyter lab code/cost_scaling.ipynb
 ```
 
-`cost_scaling.ipynb` needs **numba** — it JIT-compiles the two solvers that numerically
-find how many elements fit a fixed budget. Without it the notebook fails at the first
-cell with a bare `ModuleNotFoundError`, which is why the dependency is pinned here.
+Both notebooks use the portable inline Matplotlib backend and contain all numerical
+inputs; they do not download data. Restart the kernel and run all cells to regenerate
+the figures. `cost_scaling.ipynb` writes the three canonical `ratevsaeff_*.png` panels
+to `paper/`; `scaley_kmb_mod.ipynb` writes `paper/frbrate_alpha15.png` and two ignored
+exploratory plots in `code/`.
 
-Both notebooks use the `%matplotlib notebook` backend, which needs `ipympl` in
-JupyterLab. Swap to `%matplotlib inline` if you would rather not install it.
+To build the later manuscript draft:
 
-## The model, in brief
-
-**FRB rate** above a fluence threshold, for `n` elements of effective area `A_el` at
-survey frequency `ν`:
-
+```bash
+cd paper
+latexmk -pdf frbarray.tex
 ```
+
+## Model summary
+
+For `n` elements of effective area `A_el` at survey frequency `ν`, the FRB rate scales
+as:
+
+```text
 R(>F_min) ∝ A_el^(-α-1) · ν^(-α/2-2) · n^(-α)
 ```
 
-**Cost**, split three ways:
+The modeled costs are:
 
 | Term | Model |
 |---|---|
@@ -68,23 +89,28 @@ R(>F_min) ∝ A_el^(-α-1) · ν^(-α/2-2) · n^(-α)
 | Aperture array | `C_a = A₀ · m · n` |
 | Signal processing | `C_s = (S₀ + r·S₀·log₂ n) · f · ν · n` |
 
-The `log₂ n` term is the FX correlator's N log N scaling — added during review, at the
-referee's insistence that "factors of 2 matter when real dollars are involved."
+Constants and assumptions are defined near the top of `code/cost_scaling.ipynb`.
 
-Constants (`D₀`, `A₀`, `S₀`, and the assumed `R₀`, `T_sys`, SNR threshold) are set at
-the top of `cost_scaling.ipynb` and are the first thing to revisit if you are adapting
-this to present-day hardware costs.
+## History and preservation
 
-## History
+The files from a former companion `-Draft` repository were imported here in 2026. The
+current default-branch ancestry does **not** contain that repository's complete commit
+history, so the earlier README claim that every Draft commit was preserved was
+incorrect. Repository administrators retained a private preservation copy while a
+sanitized public-history reconstruction is completed.
 
-This repository absorbed a second repo, `...-Fast-Radio-Bursts-Draft`, which held the
-manuscript while the code lived here. Both histories are preserved here — the merge
-kept every commit from both sides — and the `-Draft` repository has since been
-deleted, so this is now the only copy.
+During public review, the former editorial-correspondence path contains only a
+nonconfidential compressed tombstone. It prevents GitHub from redisplaying the removed
+text in the pull-request diff and must itself be removed during the required sanitized
+history reconstruction before archival.
 
-The URL cited in the paper's own footnote points at this repository, so it should
-not be renamed or deleted.
+The exact repository URL is cited in the manuscript and should not be renamed or
+deleted.
 
-## Licence
+## Rights and reuse
 
-BSD 3-Clause License — see [`LICENSE`](LICENSE).
+This archive contains materials from multiple authors and third parties. No single
+license is asserted for the repository as a whole. Files containing their own license
+notices remain subject to those notices. No additional permission to reuse other
+materials is granted by this archive beyond rights provided by applicable law. See
+[`NOTICE`](NOTICE).
