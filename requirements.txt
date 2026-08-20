@@ -1,0 +1,9 @@
+# Tested archival environment for both notebooks (Python 3.12).
+# Pinning the direct dependencies makes future regeneration auditable; transitive
+# dependencies are resolved by pip for this set of versions.
+numpy==2.5.2
+scipy==1.18.0
+matplotlib==3.11.1
+numba==0.67.0
+jupyterlab==4.6.3
+nbconvert==7.17.1
