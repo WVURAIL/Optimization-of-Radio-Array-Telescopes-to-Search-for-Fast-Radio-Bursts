@@ -18,7 +18,7 @@ venv/
 *.fdb_latexmk
 *.fls
 *.toc
-paper/frbarray.pdf
+# paper/frbarray.pdf is intentionally tracked as the reviewed corrected paper.
 
 # OS cruft
 .DS_Store
