@@ -1,0 +1,305 @@
+--- 95d7ed5/scaley_kmb_mod
+
++++ corrected/scaley_kmb_mod
+
+@@ -1,7 +1,12 @@
+
+-%matplotlib notebook
++%matplotlib inline
++from pathlib import Path
+ from matplotlib.pyplot import *
+ import numpy as np
+ from numpy.polynomial.polynomial import polyfit
++
++working_dir = Path.cwd()
++repo_root = working_dir.parent if (working_dir / 'scaley_kmb_mod.ipynb').exists() else working_dir
++figure_dir = repo_root / 'paper'
+ 
+ def scaleR(R,S):
+     return R*np.power(S,1.5)
+@@ -11,7 +16,8 @@
+
+     return R*np.power(S,2)
+ 
+ figure()
+-rates = [scaleR(225,6.7), scaleR(1e5,3), scaleR(1.5e2,107*0.66), scaleR(700,700), scaleR(4400,4.4), scaleR(7000,1.5), scaleR(3300,3.8),scaleR(587,6), scaleR(5,69), scaleR(1.7e3,2),scaleR(37,26), scaleR(98,8), scaleR(5e3,1)]
++# Historical exploratory fit; later cells contain the canonical data and error treatment.
++rates = [scaleR(225,6.7), scaleR(1e4,3), scaleR(1.5e2,107*0.66), scaleR(700,700), scaleR(4400,4), scaleR(7000,1.5), scaleR(3300,3.8),scaleR(587,6), scaleR(5,69), scaleR(1.7e3,2),scaleR(37,26), scaleR(98,8), scaleR(5e3,1)]
+ freq = [1400, 1400, 142, 155, 1400, 1400, 1400, 1400, 843, 1400, 1400, 843, 800]
+ plot(freq, rates, 'o')
+ # Fit
+@@ -40,14 +46,14 @@
+
+ 'Shannon et al. (2018)',
+ 'Farah et al. (2019)',
+ 'Masui et al. (2015)',
+-'Chawla et. al. (2017)'
++'Chawla et al. (2017)'
+ ]
+ 
+ rates = [scaleR(225,6.7), 
+          scaleR(1e4,3), 
+          scaleR(1.5e2,107*0.66), 
+          scaleR(700,700), 
+-         scaleR(4400,4.4), 
++         scaleR(4400,4), 
+          scaleR(7000,1.5), 
+          scaleR(3300,3.8),
+          scaleR(5,69), 
+@@ -71,20 +77,6 @@
+
+         800,
+        350]
+ 
+-yerr = [[0,0], 
+-        [0.6e4,-0.5e4],
+-        [0,0],
+-        [0,0],
+-        [5.2e3,-3.1e3], 
+-        [5e3,-3e3], 
+-        [3.7e3,-2.2e3], 
+-        [18.7e2,-4.7e2],
+-        [1.5e3,-0.9e3],
+-        [8,-8],
+-        [59,-39],
+-        [0,0],
+-       [0,0]]
+-
+ # lower & upper limits of the error
+ lolims = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=bool)
+ uplims = np.array([0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], dtype=bool)
+@@ -92,23 +84,11 @@
+
+ colors =          ['k','g','r','c','m','y','b','tab:purple','lime','tab:gray','chocolate','blueviolet','tab:blue']
+ 
+ 
+-rate1 = [0, 
+-         scaleR(1e4,3), 
+-         0, 
+-         0, 
+-         scaleR(4400,4.4), 
+-         scaleR(7000,1.5), 
+-         scaleR(3300,3.8),
+-         scaleR(5,69), 
+-         scaleR(1.7e3,2),
+-         scaleR(37,26), 
+-         scaleR(98,8), 
+-         0,
+-        0]
+-
+-yerr_up = rate1 + np.array([0,scaleR(0.6e4,3),0,0,scaleR(5.2e3,4),scaleR(5e3,1.5),scaleR(3.7e3,3.8),scaleR(18.7,69),scaleR(1.5e3,2),scaleR(8,26),scaleR(59,8),0, 0])
+-
+-yerr_low = rate1 + np.array([0,scaleR(-0.5e4,3),8.5e4,1.29e7,scaleR(-3.1e3,4),scaleR(-3e3,1.5),scaleR(-2.2e3,3.8),scaleR(-4.7,69),scaleR(-0.9e3,2),scaleR(-8,26),scaleR(-39,8),0,2e4])
++# Matplotlib expects positive distances from each central value, not interval endpoints.
++yerr_up = np.array([0, scaleR(0.6e4,3), 0, 0, scaleR(5.2e3,4), scaleR(5e3,1.5), scaleR(3.7e3,3.8), scaleR(18.7,69), scaleR(1.5e3,2), scaleR(8,26), scaleR(59,8), 0, 0])
++yerr_low = np.array([0, scaleR(0.5e4,3), 0, 0, scaleR(3.1e3,4), scaleR(3e3,1.5), scaleR(2.2e3,3.8), scaleR(4.7,69), scaleR(0.9e3,2), scaleR(8,26), scaleR(39,8), 0, 0])
++# Arrow length for upper-limit observations is presentational.
++yerr_low[uplims] = 0.5 * np.asarray(rates)[uplims]
+ 
+ fig, ax = subplots(figsize=(16, 13))
+ # Looping through the letters and plotting the points
+@@ -137,7 +117,8 @@
+
+ #ax.legend(loc='best', frameon=True)  
+ #ax.legend( loc='bottom',
+ #           , mode="expand", borderaxespad=0.)
+-ax.legend(bbox_to_anchor=(1,1), ncol=2, borderaxespad=0.3)
++# Keep all upper-limit markers visible below the legend.
++ax.legend(loc='lower center', bbox_to_anchor=(0.5, 1.09), ncol=2, borderaxespad=0.)
+ yscale("log")
+ xlabel(r'Frequency (MHz)',fontdict=font)
+ ylabel(r'Rate ($> 1 $ Jy.ms)', fontdict=font)
+@@ -146,10 +127,11 @@
+
+ ax.tick_params(which='major', length=12, width = 2)
+ ax.tick_params(which='minor', length=6, width = 2)
+                
+-tight_layout
++tight_layout()
++savefig(figure_dir / 'frbrate_alpha15.png')
+ #ylim(100,400000)
+ 
+-savefig('frbrate_alpha15.png')
++# The canonical alpha=-3/2 figure is saved in the plotting cell above.
+ 
+ def scaleR(R,S):
+     return R*np.power(S,1)
+@@ -168,14 +150,14 @@
+
+ 'Shannon et al. (2018)',
+ 'Farah et al. (2019)',
+ 'Masui et al. (2015)',
+-'Chawla et. al. (2017)'
++'Chawla et al. (2017)'
+ ]
+ 
+ rates = [scaleR(225,6.7), 
+          scaleR(1e4,3), 
+          scaleR(1.5e2,107*0.66), 
+          scaleR(700,700), 
+-         scaleR(4400,4.4), 
++         scaleR(4400,4), 
+          scaleR(7000,1.5), 
+          scaleR(3300,3.8),
+          scaleR(5,69), 
+@@ -199,20 +181,6 @@
+
+         800,
+        350]
+ 
+-yerr = [[0,0], 
+-        [0.6e4,-0.5e4],
+-        [0,0],
+-        [0,0],
+-        [5.2e3,-3.1e3], 
+-        [5e3,-3e3], 
+-        [3.7e3,-2.2e3], 
+-        [18.7e2,-4.7e2],
+-        [1.5e3,-0.9e3],
+-        [8,-8],
+-        [59,-39],
+-        [0,0],
+-       [0,0]]
+-
+ # lower & upper limits of the error
+ lolims = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=bool)
+ uplims = np.array([0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], dtype=bool)
+@@ -220,23 +188,11 @@
+
+ colors =          ['k','g','r','c','m','y','b','tab:purple','lime','tab:gray','chocolate','pink','tab:blue']
+ 
+ 
+-rate1 = [0, 
+-         scaleR(1e4,3), 
+-         0, 
+-         0, 
+-         scaleR(4400,4.4), 
+-         scaleR(7000,1.5), 
+-         scaleR(3300,3.8),
+-         scaleR(5,69), 
+-         scaleR(1.7e3,2),
+-         scaleR(37,26), 
+-         scaleR(98,8), 
+-         0,
+-        0]
+-
+-yerr_up = rate1 + np.array([0,scaleR(0.6e4,3),0,0,scaleR(5.2e3,4),scaleR(5e3,1.5),scaleR(3.7e3,3.8),scaleR(18.7,69),scaleR(1.5e3,2),scaleR(8,26),scaleR(59,8),0, 0])
+-
+-yerr_low = rate1 + np.array([0,scaleR(-0.5e4,3),8.5e4,1.29e7,scaleR(-3.1e3,4),scaleR(-3e3,1.5),scaleR(-2.2e3,3.8),scaleR(-4.7,69),scaleR(-0.9e3,2),scaleR(-8,26),scaleR(-39,8),0,2e4])
++# Matplotlib expects positive distances from each central value, not interval endpoints.
++yerr_up = np.array([0, scaleR(0.6e4,3), 0, 0, scaleR(5.2e3,4), scaleR(5e3,1.5), scaleR(3.7e3,3.8), scaleR(18.7,69), scaleR(1.5e3,2), scaleR(8,26), scaleR(59,8), 0, 0])
++yerr_low = np.array([0, scaleR(0.5e4,3), 0, 0, scaleR(3.1e3,4), scaleR(3e3,1.5), scaleR(2.2e3,3.8), scaleR(4.7,69), scaleR(0.9e3,2), scaleR(8,26), scaleR(39,8), 0, 0])
++# Arrow length for upper-limit observations is presentational.
++yerr_low[uplims] = 0.5 * np.asarray(rates)[uplims]
+ 
+ fig, ax = subplots(figsize=(11, 9))
+ # Looping through the letters and plotting the points
+@@ -244,7 +200,7 @@
+
+     ax.errorbar(freq[i], rates[i], yerr=[[yerr_low[i]], [yerr_up[i]]], fmt=marker[i], color=colors[i], capsize=4, elinewidth=3, lolims=lolims[i], uplims=uplims[i])
+     ax.scatter([],[],color = colors[i], label = surveys[i])        
+ 
+-style.use('seaborn-paper')
++style.use('seaborn-v0_8-paper')
+ rc('font', size=18)          # controls default text sizes
+ #rc('axes', titlesize=16)     # fontsize of the axes title
+ #rc('axes', labelsize=16)    # fontsize of the x and y labels
+@@ -260,10 +216,12 @@
+
+ yscale("log")
+ xlabel(r'Frequency (MHz)')
+ ylabel(r'Rate $(> 1 \rm{Jy.ms})$')
+-title(r'Scaled by $\alpha = 1$')
++title(r'Scaled by $\alpha = -1$')
++tight_layout()
++savefig('frbrate_alpha1.png')
+ #ylim(100,400000)
+ 
+-savefig('frbrate_alpha1.png')
++# The exploratory alpha=-1 figure is saved in the plotting cell above.
+ 
+ 
+ def scaleR(R,S):
+@@ -283,14 +241,14 @@
+
+ 'Shannon et al. (2018)',
+ 'Farah et al. (2019)',
+ 'Masui et al. (2015)',
+-'Chawla et. al. (2017)'
++'Chawla et al. (2017)'
+ ]
+ 
+ rates = [scaleR(225,6.7), 
+          scaleR(1e4,3), 
+          scaleR(1.5e2,107*0.66), 
+          scaleR(700,700), 
+-         scaleR(4400,4.4), 
++         scaleR(4400,4), 
+          scaleR(7000,1.5), 
+          scaleR(3300,3.8),
+          scaleR(5,69), 
+@@ -314,20 +272,6 @@
+
+         800,
+        350]
+ 
+-yerr = [[0,0], 
+-        [0.6e4,-0.5e4],
+-        [0,0],
+-        [0,0],
+-        [5.2e3,-3.1e3], 
+-        [5e3,-3e3], 
+-        [3.7e3,-2.2e3], 
+-        [18.7e2,-4.7e2],
+-        [1.5e3,-0.9e3],
+-        [8,-8],
+-        [59,-39],
+-        [0,0],
+-       [0,0]]
+-
+ # lower & upper limits of the error
+ lolims = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=bool)
+ uplims = np.array([0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], dtype=bool)
+@@ -335,23 +279,11 @@
+
+ colors =          ['k','g','r','c','m','y','b','tab:purple','lime','tab:gray','chocolate','pink','tab:blue']
+ 
+ 
+-rate1 = [0, 
+-         scaleR(1e4,3), 
+-         0, 
+-         0, 
+-         scaleR(4400,4.4), 
+-         scaleR(7000,1.5), 
+-         scaleR(3300,3.8),
+-         scaleR(5,69), 
+-         scaleR(1.7e3,2),
+-         scaleR(37,26), 
+-         scaleR(98,8), 
+-         0,
+-        0]
+-
+-yerr_up = rate1 + np.array([0,scaleR(0.6e4,3),0,0,scaleR(5.2e3,4),scaleR(5e3,1.5),scaleR(3.7e3,3.8),scaleR(18.7,69),scaleR(1.5e3,2),scaleR(8,26),scaleR(59,8),0, 0])
+-
+-yerr_low = rate1 + np.array([0,scaleR(-0.5e4,3),8.5e4,1.29e7,scaleR(-3.1e3,4),scaleR(-3e3,1.5),scaleR(-2.2e3,3.8),scaleR(-4.7,69),scaleR(-0.9e3,2),scaleR(-8,26),scaleR(-39,8),0,2e4])
++# Matplotlib expects positive distances from each central value, not interval endpoints.
++yerr_up = np.array([0, scaleR(0.6e4,3), 0, 0, scaleR(5.2e3,4), scaleR(5e3,1.5), scaleR(3.7e3,3.8), scaleR(18.7,69), scaleR(1.5e3,2), scaleR(8,26), scaleR(59,8), 0, 0])
++yerr_low = np.array([0, scaleR(0.5e4,3), 0, 0, scaleR(3.1e3,4), scaleR(3e3,1.5), scaleR(2.2e3,3.8), scaleR(4.7,69), scaleR(0.9e3,2), scaleR(8,26), scaleR(39,8), 0, 0])
++# Arrow length for upper-limit observations is presentational.
++yerr_low[uplims] = 0.5 * np.asarray(rates)[uplims]
+ 
+ fig, ax = subplots(figsize=(11, 9))
+ # Looping through the letters and plotting the points
+@@ -375,7 +307,9 @@
+
+ yscale("log")
+ xlabel(r'Frequency (MHz)')
+ ylabel(r'$\rm{Rate} (> 1 \rm{Jy.ms})$')
+-title(r'Scaled by $\alpha = 2$')
++title(r'Scaled by $\alpha = -2$')
++tight_layout()
++savefig('frbrate_alpha2.png')
+ #ylim(100,400000)
+ 
+-savefig('frbrate_alpha2.png')
++# The exploratory alpha=-2 figure is saved in the plotting cell above.

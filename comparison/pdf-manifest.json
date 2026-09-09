@@ -1,0 +1,14 @@
+{
+  "paper/frbarray.pdf": {
+    "sha256": "0b641890990c4e66f23f0a5ecc0c6fe261254e6a7d50b4efd6afa1736b6e2fff",
+    "pages": 5
+  },
+  "comparison/paper-before.pdf": {
+    "sha256": "6e0a4706921fa19c607b99a8a711b28f5a6509a7832e7399779986c1c8de8d7a",
+    "pages": 5
+  },
+  "comparison/results-comparison.pdf": {
+    "sha256": "5e7b493a0046faa6bb5763425e9ead85c7a45308cb7133756bc4e3be8cbac809",
+    "pages": 5
+  }
+}

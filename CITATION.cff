@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use these materials, please cite the accompanying arXiv paper using the preferred citation below."
+title: "Optimization of Radio Array Telescopes to Search for Fast Radio Bursts: research code and manuscript source"
+type: software
+authors:
+  - family-names: "Peterson"
+    given-names: "Jeffrey B."
+  - family-names: "Bandura"
+    given-names: "Kevin"
+  - family-names: "Sanghavi"
+    given-names: "Pranav"
+repository-code: "https://github.com/WVURAIL/Optimization-of-Radio-Array-Telescopes-to-Search-for-Fast-Radio-Bursts"
+preferred-citation:
+  type: generic
+  title: "Optimization of Radio Array Telescopes to Search for Fast Radio Bursts"
+  authors:
+    - family-names: "Peterson"
+      given-names: "Jeffrey B."
+    - family-names: "Bandura"
+      given-names: "Kevin"
+    - family-names: "Sanghavi"
+      given-names: "Pranav"
+  date-published: "2020-01-17"
+  doi: "10.48550/arXiv.2001.06526"
+  url: "https://arxiv.org/abs/2001.06526"
