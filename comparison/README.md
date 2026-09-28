@@ -61,3 +61,7 @@ python comparison/build_report.py
 The report uses original images in `before-figures/` and corrected images in
 `paper/`, and updates `pdf-manifest.json`. If model inputs change, update the
 report's text and check the regenerated PDFs.
+
+The dependency workflow resolves `comparison/requirements.txt` after changes and
+weekly. It submits the complete package inventory to GitHub so Dependabot tracks
+the current report environment, including indirect dependencies.
