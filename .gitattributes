@@ -1,0 +1,2 @@
+# Retain the original draft snapshot bytes and whitespace.
+paper/history/draft-2020-05-15/** -text -whitespace
