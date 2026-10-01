@@ -47,12 +47,27 @@ def test_errorbars_are_uncertainty_sizes(cell_index, exponent):
     exec(compile(ast.fix_missing_locations(ast.Module(body=nodes, type_ignores=[])), "survey-data", "exec"), namespace)
     low, high = namespace["yerr_low"], namespace["yerr_up"]
     # Farah: 98 (+59/-39), with the same fluence scaling for the value
-    # and its uncertainty. Rane uses fluence 4.4 for both as well.
+    # and its uncertainty. Rane reports a 4 Jy ms fluence threshold for both as well.
     assert low[10] == pytest.approx(39 * 8**exponent)
     assert high[10] == pytest.approx(59 * 8**exponent)
-    assert low[4] == pytest.approx(3100 * 4.4**exponent)
-    assert high[4] == pytest.approx(5200 * 4.4**exponent)
+    assert namespace["rates"][4] == pytest.approx(4400 * 4**exponent)
+    assert low[4] == pytest.approx(3100 * 4**exponent)
+    assert high[4] == pytest.approx(5200 * 4**exponent)
     assert np.all(low >= 0) and np.all(high >= 0)
     # Upper-limit arrows keep their previous lengths.
     np.testing.assert_array_equal(low[[2, 3, 12]], [8.5e4, 1.29e7, 2e4])
     np.testing.assert_array_equal(high[[2, 3, 12]], [0, 0, 0])
+
+
+def test_exploratory_rates_match_the_published_transcriptions():
+    notebook = cells("scaley_kmb_mod.ipynb")
+    namespace = {"np": np}
+    execute("".join(notebook[1]["source"]), namespace)
+    module = ast.parse("".join(notebook[2]["source"]))
+    module.body = [node for node in module.body if isinstance(node, ast.Assign)
+                   and any(isinstance(t, ast.Name) and t.id == "rates"
+                           for t in node.targets)]
+    exec(compile(module, "survey-rates", "exec"), namespace)
+    # Thornton (2013), page 3; Rane (2015), section 3.3 and Figure 6.
+    assert namespace["rates"][1] == pytest.approx(10000 * 3**1.5)
+    assert namespace["rates"][4] == pytest.approx(4400 * 4**1.5)
