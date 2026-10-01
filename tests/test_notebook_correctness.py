@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import scipy.constants as const
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -21,7 +22,7 @@ def execute(source, namespace, functions_only=False):
 
 def test_aperture_array_uses_its_own_cost_model():
     notebook = cells("cost_scaling.ipynb")
-    namespace = {"np": np}
+    namespace = {"np": np, "const": const}
     for index in (2, 5):
         execute("".join(notebook[index]["source"]), namespace)
     execute("".join(notebook[6]["source"]), namespace, functions_only=True)
