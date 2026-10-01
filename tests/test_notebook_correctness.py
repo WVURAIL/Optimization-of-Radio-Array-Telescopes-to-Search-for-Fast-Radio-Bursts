@@ -50,9 +50,23 @@ def test_errorbars_are_uncertainty_sizes(cell_index, exponent):
     # and its uncertainty. Rane keeps the feature branch's consistent 4 Jy.ms fluence.
     assert low[10] == pytest.approx(39 * 8**exponent)
     assert high[10] == pytest.approx(59 * 8**exponent)
+    assert namespace["rates"][4] == pytest.approx(4400 * 4**exponent)
     assert low[4] == pytest.approx(3100 * 4**exponent)
     assert high[4] == pytest.approx(5200 * 4**exponent)
     assert np.all(low >= 0) and np.all(high >= 0)
     # Upper-limit arrows retain the feature branch presentation.
     np.testing.assert_allclose(low[[2, 3, 12]], 0.5 * np.asarray(namespace["rates"])[[2, 3, 12]])
     np.testing.assert_array_equal(high[[2, 3, 12]], [0, 0, 0])
+
+def test_exploratory_rates_match_the_published_transcriptions():
+    notebook = cells("scaley_kmb_mod.ipynb")
+    namespace = {"np": np}
+    execute("".join(notebook[1]["source"]), namespace)
+    module = ast.parse("".join(notebook[2]["source"]))
+    module.body = [node for node in module.body if isinstance(node, ast.Assign)
+                   and any(isinstance(t, ast.Name) and t.id == "rates"
+                           for t in node.targets)]
+    exec(compile(module, "survey-rates", "exec"), namespace)
+    # Thornton (2013), page 3; Rane (2015), section 3.3 and Figure 6.
+    assert namespace["rates"][1] == pytest.approx(10000 * 3**1.5)
+    assert namespace["rates"][4] == pytest.approx(4400 * 4**1.5)
