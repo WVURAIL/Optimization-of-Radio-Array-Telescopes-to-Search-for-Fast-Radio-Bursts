@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import scipy.constants as const
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +22,7 @@ def execute(source, namespace, functions_only=False):
 
 def test_aperture_array_uses_its_own_cost_model():
     notebook = cells("cost_scaling.ipynb")
-    namespace = {"np": np}
+    namespace = {"np": np, "const": const}
     for index in (2, 5):
         execute("".join(notebook[index]["source"]), namespace)
     execute("".join(notebook[6]["source"]), namespace, functions_only=True)
@@ -42,16 +43,16 @@ def test_errorbars_are_uncertainty_sizes(cell_index, exponent):
         if isinstance(node, ast.Assign) and any(isinstance(t, ast.Tuple) for t in node.targets):
             break
         nodes.append(node)
-    namespace = {"np": np}
+    namespace = {"np": np, "const": const}
     exec(compile(ast.fix_missing_locations(ast.Module(body=nodes, type_ignores=[])), "survey-data", "exec"), namespace)
     low, high = namespace["yerr_low"], namespace["yerr_up"]
     # Farah: 98 (+59/-39), with the same fluence scaling for the value
-    # and its uncertainty. Rane uses fluence 4.4 for both as well.
+    # and its uncertainty. Rane keeps the feature branch's consistent 4 Jy.ms fluence.
     assert low[10] == pytest.approx(39 * 8**exponent)
     assert high[10] == pytest.approx(59 * 8**exponent)
-    assert low[4] == pytest.approx(3100 * 4.4**exponent)
-    assert high[4] == pytest.approx(5200 * 4.4**exponent)
+    assert low[4] == pytest.approx(3100 * 4**exponent)
+    assert high[4] == pytest.approx(5200 * 4**exponent)
     assert np.all(low >= 0) and np.all(high >= 0)
-    # Upper-limit arrows keep their previous lengths.
-    np.testing.assert_array_equal(low[[2, 3, 12]], [8.5e4, 1.29e7, 2e4])
+    # Upper-limit arrows retain the feature branch presentation.
+    np.testing.assert_allclose(low[[2, 3, 12]], 0.5 * np.asarray(namespace["rates"])[[2, 3, 12]])
     np.testing.assert_array_equal(high[[2, 3, 12]], [0, 0, 0])

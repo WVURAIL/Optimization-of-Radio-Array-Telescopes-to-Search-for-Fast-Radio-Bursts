@@ -1,0 +1,277 @@
+--- 95d7ed5/cost_scaling
+
++++ corrected/cost_scaling
+
+@@ -1,8 +1,13 @@
+
+-%matplotlib notebook
++%matplotlib inline
++from pathlib import Path
+ import numpy as np
+ from matplotlib.pyplot import *
+ import scipy.constants as const
+ from numba import jit
++
++working_dir = Path.cwd()
++repo_root = working_dir.parent if (working_dir / 'cost_scaling.ipynb').exists() else working_dir
++figure_dir = repo_root / 'paper'
+ 
+ font = {'family': 'sans-serif',
+         'color':  'black',
+@@ -18,21 +23,28 @@
+
+ #Constants
+ #################################################################################
+ 
+-R0 = 1700 # /yr Parkes, previous surveys
++# Bhandari et al. (2018): all-sky rate above 2 Jy ms, per day.
++R0_per_day = 1700
++days_per_year = 365.25
++R0 = R0_per_day * days_per_year  # /yr, matching Figure 1
+ F0 = 2 # Jy.ms fluence threshold 
+ c = 299792458
+ pi = np.pi
+ SNR = 10
+-k = 1830.64  # boltzmnann constant in terms of Jy m^2 k^-1
++k = const.k / 1e-26  # 1380.649 Jy m^2 K^-1; 1 Jy = 1e-26 W m^-2 Hz^-1
+ Tsys = 50 # K 
+ f = 0.66 
+ t = 2 # 2ms
++
++# Effective area = aperture efficiency times geometric dish area.
++aperture_efficiency = 0.5
+ 
+ #################################################################################
+ alpha = [-1, -1.5, -2]
+ alpha = np.array(alpha, dtype=np.float64)
+ nu = [400, 800, 1600]   # MHz
+ nu = np.array(nu, dtype=np.float64)
++dish_min_area = aperture_efficiency * np.pi * (2.5 * c / (nu * 1e6))**2
+ #################################################################################
+ 
+ def frbrate(A, nu, n, alpha):
+@@ -61,26 +73,22 @@
+
+ k2 = k1 * ratio
+ 
+ # range of effective areas of each dish element considered
+-Ael = np.arange(0.1,30, 0.1)
++# Extend the display grid past the 1600 MHz, alpha=-2 peak (~42.7 m^2).
++Ael = np.arange(0.1, 60.1, 0.1)
+ Ael = np.array(Ael, dtype=np.float64)
+ #################################################################################
+ # calcualting  'n' number of dishes in Ael ( numerically )
+ 
+ @jit
+ def findn(cost, nu, Ael):
+-    k = 1
+-    n = 1
+-    while k<20000:
+-        c = ((D0*np.power(Ael,1.25) + (k1 +  k2 * np.log2(n))*f*nu) * n)
+-        if np.abs(c - cost)/cost < 0.0001:
+-                return n
+-        elif c < cost: 
+-                n = n + 1
+-                #print(n)
+-        else: 
++    n = 0
++    while n < 20000:
++        next_n = n + 1
++        next_cost = ((D0*np.power(Ael,1.25) + (k1 + k2 * np.log2(next_n))*f*nu) * next_n)
++        if next_cost > cost:
+             return n
+-        k = k+1
+-    return n 
++        n = next_n
++    return n
+ 
+ n = np.ones([len(nu),len(Ael)]) 
+ for j, nu_single in enumerate(nu):
+@@ -98,28 +106,23 @@
+
+         single_antenna_area * m/4.,
+         single_antenna_area * m/16.]
+ 
+-# calcualting 'n_array' number of apperture array elements ( numerically )
++# calculating 'n_array' number of aperture-array elements (numerically)
+ 
+ @jit
+ def findn_array(cost, nu, m):
+-    k = 1
+-    n = 1
+-    while k<20000:
+-        c = ((A0*m + (k1 +  k2 * np.log2(n))*f*nu) * n)
+-        if np.abs(c - cost)/cost < 0.0001:
+-                return n
+-        elif c < cost: 
+-                n = n + 1
+-                #print(n)
+-        else: 
++    n = 0
++    while n < 20000:
++        next_n = n + 1
++        next_cost = ((A0*m + (k1 + k2 * np.log2(next_n))*f*nu) * next_n)
++        if next_cost > cost:
+             return n
+-        k = k+1
+-    return n 
++        n = next_n
++    return n
+ 
+ n_array = np.ones([len(nu),len(m)]) 
+ for j, nu_single in enumerate(nu):
+     for i,m_single in enumerate(m):
+-        n_array[j][i] = findn(cost,nu_single,m_single)
++        n_array[j][i] = findn_array(cost,nu_single,m_single)
+ 
+ #################################################################################
+ # for 400MHz dish
+@@ -166,16 +169,16 @@
+
+ 
+ # Dishes with diameter < 5 lamda not made
+ 
+-i0 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[0]*1e6)),2)/0.5))
+-i1 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[1]*1e6)),2)/0.5))
+-i2 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[2]*1e6)),2)/0.5))
++i0 = np.where(Ael >= dish_min_area[0])
++i1 = np.where(Ael >= dish_min_area[1])
++i2 = np.where(Ael >= dish_min_area[2])
+ 
+ plot([], [], label = r'Dishes', lw = 3.5, c = 'w', alpha = 0.01 )
+ plot(Ael[i0], rate400_a1_d[i0], label = r'$\nu = 400 \ \rm{ MHz}$', lw = 3.5, c = 'r' )
+ plot(Ael[i1], rate800_a1_d[i1], label = r'$\nu = 800 \ \rm{ MHz}$',  lw = 3.5, c = 'g' )
+ plot(Ael[i2], rate1600_a1_d[i2], label = r'$\nu = 1600 \ \rm{ MHz}$', lw = 3.5, c = 'b' )
+ 
+-scatter([], [], label = r'Apperture Arrays',  c = 'w', alpha = 0.01 )
++scatter([], [], label = r'Aperture Arrays',  c = 'w', alpha = 0.01 )
+ scatter(Aeff[0], rate400_a1_aa, label = r'$\nu = 400 \ \rm{ MHz}$',  c = 'r' )
+ scatter(Aeff[1], rate800_a1_aa, label = r'$\nu = 800 \ \rm{ MHz}$',  c = 'g' )
+ scatter(Aeff[2], rate1600_a1_aa, label = r'$\nu = 1600 \ \rm{ MHz}$', c = 'b' )
+@@ -196,10 +199,10 @@
+
+ 
+ legend(ncol = 2)
+ 
+-xlim(0,30)
+-ylim(1, 1.5e3)
++xlim(0,60)
++ylim(1 * (days_per_year * (k / 1830.64)**(-1)), 1.5e3 * (days_per_year * (k / 1830.64)**(-1)))
+ tight_layout()
+-savefig('ratevsaeff_alpha1.png')
++savefig(figure_dir / 'ratevsaeff_alpha1.png')
+ 
+ 
+ fig, ax = subplots()
+@@ -211,16 +214,16 @@
+
+ 
+ # Dishes with diameter < 5 lamda not made
+ 
+-i0 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[0]*1e6)),2))/0.5)
+-i1 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[1]*1e6)),2))/0.5)
+-i2 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[2]*1e6)),2))/0.5)
++i0 = np.where(Ael >= dish_min_area[0])
++i1 = np.where(Ael >= dish_min_area[1])
++i2 = np.where(Ael >= dish_min_area[2])
+ 
+ plot([], [], label = r'Dishes', lw = 3.5, c = 'w', alpha = 0.01 )
+ plot(Ael[i0], rate400_a15_d[i0], label = r'$\nu = 400 \rm{\ MHz}$', lw = 3.5, c = 'r' )
+ plot(Ael[i1], rate800_a15_d[i1], label = r'$\nu = 800 \rm{\ MHz}$',  lw = 3.5, c = 'g' )
+ plot(Ael[i2], rate1600_a15_d[i2], label = r'$\nu = 1600 \rm{\ MHz}$', lw = 3.5, c = 'b' )
+ 
+-scatter([], [], label = r'Apperture Array', lw = 3.5, c = 'w', alpha = 0.01 )
++scatter([], [], label = r'Aperture Array', lw = 3.5, c = 'w', alpha = 0.01 )
+ scatter(Aeff[0], rate400_a15_aa, label = r'$\nu = 400 \rm{\ MHz}$',  c = 'r' )
+ scatter(Aeff[1], rate800_a15_aa, label = r'$\nu = 800 \rm{\ MHz}$',  c = 'g' )
+ scatter(Aeff[2], rate1600_a15_aa, label = r'$\nu = 1600 \rm{\ MHz}$', c = 'b' )
+@@ -237,12 +240,12 @@
+
+ ax.tick_params(which='minor', length=3, width = 1)
+ 
+ legend(ncol = 2)#, bbox_to_anchor=(1,1))
++xlim(0,60)
++ylim(0.08 * (days_per_year * (k / 1830.64)**(-1.5)), 2e4 * (days_per_year * (k / 1830.64)**(-1.5)))
+ tight_layout()
+-xlim(0,30)
+-ylim(0.08, 2e4)
+-
+-
+-savefig('ratevsaeff_alpha15.png')
++
++
++savefig(figure_dir / 'ratevsaeff_alpha15.png')
+ 
+ 
+ fig, ax = subplots()
+@@ -254,16 +257,16 @@
+
+ 
+ # Dishes with diameter < 5 lamda not made
+ 
+-i0 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[0]*1e6)),2))/0.5)
+-i1 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[1]*1e6)),2))/0.5)
+-i2 = np.where(Ael > ( np.pi * np.power((2.5*c/(nu[2]*1e6)),2))/0.5)
++i0 = np.where(Ael >= dish_min_area[0])
++i1 = np.where(Ael >= dish_min_area[1])
++i2 = np.where(Ael >= dish_min_area[2])
+ 
+ plot([], [], label = r'Dishes', lw = 3.5, c = 'w', alpha = 0.01 )
+ plot(Ael[i0], rate400_a2_d[i0], label = r'$\nu = 400 \rm{\ MHz}$', lw = 3.5, c = 'r' )
+ plot(Ael[i1], rate800_a2_d[i1], label = r'$\nu = 800 \rm{\ MHz}$',  lw = 3.5, c = 'g' )
+ plot(Ael[i2], rate1600_a2_d[i2], label = r'$\nu = 1600 \rm{\ MHz}$', lw = 3.5, c = 'b' )
+ 
+-scatter([], [], label = r'Apperture Array', lw = 3.5, c = 'w', alpha = 0.01 )
++scatter([], [], label = r'Aperture Array', lw = 3.5, c = 'w', alpha = 0.01 )
+ scatter(Aeff[0], rate400_a2_aa, label = r'$\nu = 400 \rm{\ MHz}$',  c = 'r' )
+ scatter(Aeff[1], rate800_a2_aa, label = r'$\nu = 800 \rm{\ MHz}$',  c = 'g' )
+ scatter(Aeff[2], rate1600_a2_aa, label = r'$\nu = 1600 \rm{\ MHz}$', c = 'b' )
+@@ -282,8 +285,43 @@
+
+ ax.tick_params(which='minor', length=3, width = 1)
+ 
+ legend(ncol = 2)#, bbox_to_anchor=(1,1))
++xlim(0,60)
++ylim(0.06 * (days_per_year * (k / 1830.64)**(-2)), 5e5 * (days_per_year * (k / 1830.64)**(-2)))
+ tight_layout()
+-xlim(0,30)
+-ylim(0.06, 5e5)
+-
+-savefig('ratevsaeff_alpha2.png')
++
++savefig(figure_dir / 'ratevsaeff_alpha2.png')
++
++### Optima independent of the plotting window
++The grid above is for plotting. The calculation below searches every affordable integer dish count, so the reported optima do not depend on the 60 m² plot limit. Sub-5λ dishes remain mathematical extrapolations, marked dashed above.
++
++
++# Optimize dishes over all affordable integer counts, independently of the plot grid.
++# For alpha < -1 the rate increases with area at fixed n, so each candidate uses
++# the largest affordable area. At alpha = -1 use the smallest displayed area.
++def optimal_dish(budget, frequency, slope, min_area=0.1):
++    if slope > -1:
++        raise ValueError("This optimizer covers the modeled slopes alpha <= -1.")
++    max_count = findn(budget, frequency, min_area)
++    if max_count == 0:
++        raise ValueError("Budget cannot afford one dish at min_area.")
++    counts = np.arange(1, max_count + 1, dtype=np.float64)
++    processing = (k1 + k2 * np.log2(counts)) * f * frequency
++    areas = np.power((budget / counts - processing) / D0, 1 / 1.25)
++    if slope == -1:
++        areas[:] = min_area
++    # Round downward if the inverse calculation lands just above the budget.
++    costs = (D0 * areas**1.25 + processing) * counts
++    while np.any(costs > budget):
++        over = costs > budget
++        areas[over] = np.nextafter(areas[over], 0.0)
++        costs = (D0 * areas**1.25 + processing) * counts
++    rates = frbrate(areas, frequency, counts, slope)
++    best = np.argmax(rates)
++    return float(areas[best]), int(counts[best]), float(rates[best])
++
++print("Dish optima (area m^2, integer count, rate /yr); alpha=-1 uses A>=0.1 m^2")
++for slope in alpha:
++    for frequency in nu:
++        area_best, count_best, rate_best = optimal_dish(cost, frequency, slope)
++        print(f"alpha={slope:4.1f}, nu={frequency:4.0f} MHz: "
++              f"{area_best:8.4f}, {count_best:4d}, {rate_best:12.3f}")

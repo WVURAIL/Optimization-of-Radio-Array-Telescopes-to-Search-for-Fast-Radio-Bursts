@@ -1,0 +1,50 @@
+name: Refresh comparison dependencies
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - comparison/requirements.txt
+      - .github/scripts/dependency_snapshot.py
+      - .github/workflows/dependencies.yml
+  schedule:
+    - cron: "23 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: comparison-dependencies
+  cancel-in-progress: false
+
+jobs:
+  dependencies:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Resolve the complete report environment
+        run: >-
+          python -m pip install --dry-run --ignore-installed --only-binary=:all:
+          --report "$RUNNER_TEMP/pip-report.json"
+          -r comparison/requirements.txt
+      - name: Create the dependency snapshot
+        run: >-
+          python .github/scripts/dependency_snapshot.py
+          "$RUNNER_TEMP/pip-report.json" comparison/requirements.txt
+          "$RUNNER_TEMP/dependency-snapshot.json"
+      - name: Update the dependency graph
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh api --method POST
+          "repos/$GITHUB_REPOSITORY/dependency-graph/snapshots"
+          --input "$RUNNER_TEMP/dependency-snapshot.json"
